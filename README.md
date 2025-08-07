@@ -28,7 +28,7 @@ Currently implemented and planned features include:
 ## 🚀 Technologies Used
 
 *   **Spring Boot:** Framework for building robust, stand-alone, production-grade Spring applications.
-*   **Java 17:** The core programming language.
+*   **Java 21:** The core programming language.
 *   **Spring Data JPA:** For easy data access and ORM (Object-Relational Mapping) with Hibernate.
 *   **PostgreSQL:** The relational database for data persistence, run via Docker.
 *   **Lombok:** Reduces boilerplate code (getters, setters, constructors).
@@ -83,10 +83,9 @@ docker run --name library-postgres \
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/online-library-management.git
-    cd online-library-management
+    git clone https://github.com/ksvcchh/bookstore
+    cd bookstore
     ```
-    *(Replace `your-username/online-library-management.git` with your actual repository URL)*
 
 2.  **Configure `application.properties`:**
     Navigate to `src/main/resources/application.properties` and ensure your database connection details match those used in the Docker command:
@@ -102,7 +101,6 @@ docker run --name library-postgres \
     spring.jpa.hibernate.ddl-auto=update # Creates/updates tables based on entities (dev only)
     spring.jpa.show-sql=true
     spring.jpa.properties.hibernate.format_sql=true
-    spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 
     # Server Port
     server.port=8080
@@ -137,14 +135,14 @@ The API base URL is `http://localhost:8080/api/v1`.
 
 ```json
 {
-  "title": "The Hitchhiker's Guide to the Galaxy",
-  "authorId": 1,              // Assuming Author entity is in place or will be linked later
   "isbn": "978-0345391803",
-  "genre": "Science Fiction",
-  "publicationYear": 1979,
-  "availableCopies": 5,
+  "title": "The Hitchhiker's Guide to the Galaxy",
+  "publicationDate": "1979-10-12",  // YYYY-MM-DD format
+  "publisher": "Harmony Books",
   "totalCopies": 10,
-  "coverImageUrl": "https://example.com/hitchhiker.jpg"
+  "authorId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+  "coverImage": "https://example.com/hitchhiker.jpg",
+  "genreIds": ["b1c2d3e4-f5a6-7890-1234-567890abcdef", "c2d3e4f5-a6b7-8901-2345-67890abcdef0"] // List of UUIDs for associated genres
 }
 ```
 
@@ -159,14 +157,14 @@ curl -X POST \
   http://localhost:8080/api/v1/books \
   -H 'Content-Type: application/json' \
   -d '{
-    "title": "The Hobbit",
-    "authorId": 1,
     "isbn": "978-0345339683",
-    "genre": "Fantasy",
-    "publicationYear": 1937,
-    "availableCopies": 3,
+    "title": "The Hobbit",
+    "publicationDate": "1937-09-21",
+    "publisher": "George Allen & Unwin",
     "totalCopies": 5,
-    "coverImageUrl": "https://example.com/hobbit.jpg"
+    "authorId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",                     
+    "coverImage": "https://example.com/hobbit.jpg",
+    "genreIds": ["b1c2d3e4-f5a6-7890-1234-567890abcdef"]                  
   }'
 ```
 
@@ -176,34 +174,34 @@ curl -X POST \
 curl http://localhost:8080/api/v1/books
 ```
 
-**3. Get Book by ID (GET)** *(Replace `1` with an actual book ID)*
+**3. Get Book by ID (GET)**
 
 ```bash
-curl http://localhost:8080/api/v1/books/1
+curl http://localhost:8080/api/v1/books/3f8e7d2c-1a9b-4c5d-6e7f-890123456789
 ```
 
-**4. Update a Book (PUT)** *(Replace `1` with an actual book ID)*
+**4. Update a Book (PUT)**
 
 ```bash
 curl -X PUT \
-  http://localhost:8080/api/v1/books/1 \
+  http://localhost:8080/api/v1/books/3f8e7d2c-1a9b-4c5d-6e7f-890123456789 \
   -H 'Content-Type: application/json' \
   -d '{
-    "title": "The Hobbit (Revised Edition)",
-    "authorId": 1,
     "isbn": "978-0345339683",
-    "genre": "Fantasy",
-    "publicationYear": 1937,
-    "availableCopies": 4,  # Updated!
-    "totalCopies": 5,
-    "coverImageUrl": "https://example.com/hobbit_revised.jpg"
+    "title": "The Hobbit (Revised Edition)",
+    "publicationDate": "1937-09-21",
+    "publisher": "George Allen & Unwin",
+    "totalCopies": 6,  # Updated!
+    "authorId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "coverImage": "https://example.com/hobbit_revised.jpg",
+    "genreIds": ["b1c2d3e4-f5a6-7890-1234-567890abcdef", "c2d3e4f5-a6b7-8901-2345-67890abcdef0"] # Updated!
   }'
 ```
 
-**5. Delete a Book (DELETE)** *(Replace `1` with an actual book ID)*
+**5. Delete a Book (DELETE)**
 
 ```bash
-curl -X DELETE http://localhost:8080/api/v1/books/1
+curl -X DELETE http://localhost:8080/api/v1/books/3f8e7d2c-1a9b-4c5d-6e7f-890123456789
 ```
 
 ---
