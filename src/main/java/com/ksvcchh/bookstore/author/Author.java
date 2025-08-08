@@ -1,6 +1,6 @@
-package com.ksvcchh.bookstore.user;
+package com.ksvcchh.bookstore.author;
 
-import com.ksvcchh.bookstore.borrowing.Borrowing;
+import com.ksvcchh.bookstore.book.Book;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,16 +9,15 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "authors")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -29,20 +28,8 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
-
-    private String city;
-
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "user_role")
-    private Role role;
-
-    @Column(name = "dob")
-    private LocalDate dateOfBirth;
-
-    @OneToMany(mappedBy = "user")
-    private Set<Borrowing> borrowings;
+    @ManyToMany(mappedBy = "authors")
+    private Set<Book> books;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
@@ -51,10 +38,4 @@ public class User {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Instant updatedAt;
-
-    public enum Role {
-        USER,
-        MODERATOR,
-        ADMIN
-    }
 }

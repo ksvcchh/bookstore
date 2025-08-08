@@ -25,6 +25,10 @@ Currently implemented and planned features include:
 *   **User Authentication & Authorization:** (Planned using Spring Security and JWT)
 *   **Global Exception Handling:** Robust error responses for various scenarios.
 
+## ⛁ Database Scheme
+
+![Database Scheme](db_scheme.png)
+
 ## 🚀 Technologies Used
 
 *   **Spring Boot:** Framework for building robust, stand-alone, production-grade Spring applications.

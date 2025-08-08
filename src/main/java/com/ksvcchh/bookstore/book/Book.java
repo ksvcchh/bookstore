@@ -1,51 +1,71 @@
 package com.ksvcchh.bookstore.book;
 
+import com.ksvcchh.bookstore.author.Author;
+import com.ksvcchh.bookstore.borrowing.Borrowing;
+import com.ksvcchh.bookstore.genre.Genre;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
-
 @Entity
+@Table(name = "books")
 @Data
-class Book {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Book {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(length = 30, nullable = false)
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String isbn;
 
-    @Column(length = 30, nullable = false)
-    private String surname;
+    @Column(nullable = false)
+    private String title;
 
-    @Column(length = 50, nullable = false, unique = true)
-    private String email;
+    @Column(name = "publication_date")
+    private LocalDate publicationDate;
 
-    @Column(length = 50, nullable = false)
-    private String password;
+    private String publisher;
 
-    private String city;
+    @Column(name = "total_copies", nullable = false)
+    private int totalCopies;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(name = "cover_image")
+    private String coverImage;
 
-    private LocalDate dob;
+    @ManyToMany
+    @JoinTable(
+            name = "book_authors",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
+    private Set<Author> authors;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @ManyToMany
+    @JoinTable(
+            name = "book_genres",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<Genre> genres;
+
+    @OneToMany(mappedBy = "book")
+    private Set<Borrowing> borrowings;
+
+    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    public Book() {}
-
-    public enum Role {
-        User,
-        Moderator,
-        Admin
-    }
-
+    @UpdateTimestamp
+    private Instant updatedAt;
 }
